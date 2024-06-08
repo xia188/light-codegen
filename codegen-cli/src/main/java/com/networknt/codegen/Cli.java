@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import static java.io.File.separator;
 
+import java.io.File;
+
 /**
  * Created by steve on 24/04/17.
  */
@@ -89,7 +91,7 @@ public class Cli {
             Object modelNode = null;
             // model can be empty in some cases.
             if(model != null) {
-                String ext = NioUtils.getFileExtension(model);
+                String ext = getFileExtension(model);
                 if(StringUtils.equalsIgnoreCase(ext, JSON)) {
                     if (Utils.isUrl(model)) {
                         modelNode = Generator.jsonMapper.readTree(Utils.urlToByteArray(new URL(model)));
@@ -115,7 +117,7 @@ public class Cli {
 
             JsonNode configNode = null;
             if(config != null) {
-                String ext = NioUtils.getFileExtension(config);
+                String ext = getFileExtension(config);
                 if (StringUtils.equalsIgnoreCase(ext, JSON)) {
                     if (Utils.isUrl(config)) {
                         configNode = Generator.jsonMapper.readTree(Utils.urlToByteArray(new URL(config)));
@@ -147,4 +149,26 @@ public class Cli {
         }
     }
 
+    /**
+     * Get the file extension from the File object
+     * @param file File object
+     * @return String extension
+     */
+    public static String getFileExtension(File file) {
+        String name = file.getName();
+        return getFileExtension(name);
+    }
+
+    /**
+     * Get the file extension from the file name
+     * @param name File name
+     * @return String extension
+     */
+    public static String getFileExtension(String name) {
+        int lastIndexOf = name.lastIndexOf(".");
+        if (lastIndexOf < 0) {
+            return StringUtils.EMPTY;
+        }
+        return name.substring(lastIndexOf+1);
+    }
 }
